@@ -1,0 +1,37 @@
+% fmat=moviein(20);
+v = VideoWriter('newfile.mp4','MPEG-4');
+v.FrameRate=10;
+open(v);
+t=-2:0.0001:2;
+L=linspace(0.5,49.5,200);
+f=20;
+j=0;
+a=sin(2*pi*f*t);
+set(gcf,'color',[1 1 1]);
+string1='Band excitation signal generation, f = 20.0 ~';
+for i=linspace(1,10,100)
+    j=j+1;
+    f=f+10/100;
+    b=sin(2*pi*f*t);
+    a=a+b;
+    F=fft(a);
+    c=sqrt(abs(F(1:200)));
+    pause(0.01);
+    string2=num2str(f,'%.1f');
+    strings=strcat(string1,32,string2,32,'Hz');
+    clf;
+    subplot(3,1,1);
+    plot(t,b);
+    subplot(3,1,2);
+    plot(t,a);
+    subplot(3,1,3);
+    plot(L,c);
+    annotation('textbox',[0,0,1,0.05],'String',strings,'HorizontalAlignment','center','LineStyle','none');
+    annotation('textbox',[0.14,0.42,1,0.05],'String','BE','HorizontalAlignment','left','LineStyle','none');
+    annotation('textbox',[0.14,0.12,1,0.05],'String','FFT','HorizontalAlignment','left','LineStyle','none');
+    drawnow;
+    fmat(:,j)=getframe(gcf);
+end
+% movie(fmat,1,5);
+writeVideo(v,fmat);
+close(v);
